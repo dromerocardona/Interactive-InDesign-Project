@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive InDesign Project</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            background-color: #f0f0f0; /* Fallback background */
+        }
+        .slide-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 1;
+            transition: opacity 1.5s ease-in-out;
+            z-index: 1;
+        }
+        .slide-container.fade-out {
+            opacity: 0;
+        }
+        .slide-container.active {
+            z-index: 2;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container active" id="slide1">
+        <iframe src="e-1.html" title="Slide 1"></iframe>
+    </div>
+    <div class="slide-container" id="slide2">
+        <iframe src="e-2.html" title="Slide 2"></iframe>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const slide1 = document.getElementById('slide1');
+        const slide2 = document.getElementById('slide2');
+        const fadeDuration = 1500; // Matches CSS transition
+        const displayTime = 5000; // Time each slide is visible (ms)
+
+        function fadeToNext() {
+            const current = currentSlide === 1 ? slide1 : slide2;
+            const next = currentSlide === 1 ? slide2 : slide1;
+            
+            // Fade out current
+            current.classList.add('fade-out');
+            
+            setTimeout(() => {
+                // Hide current and show next
+                current.classList.remove('active');
+                current.style.display = 'none';
+                
+                next.style.display = 'block';
+                next.classList.add('active');
+                next.classList.remove('fade-out');
+                next.style.opacity = '1';
+                
+                currentSlide = currentSlide === 1 ? 2 : 1;
+                
+                // Fade in next (already at opacity 1, but transition handles it)
+                setTimeout(() => {
+                    // Schedule next fade
+                    setTimeout(fadeToNext, displayTime);
+                }, fadeDuration);
+            }, fadeDuration);
+        }
+
+        // Start the loop after initial display
+        setTimeout(fadeToNext, displayTime);
+    </script>
+</body>
+</html>
